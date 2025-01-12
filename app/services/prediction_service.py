@@ -48,13 +48,13 @@ def get_most_similar_users(user_data, user_id, features, top_n=5):
     similarities = compute_similarities(user_data, user_id, features)
 
     # Sort by similarity and get the top n users (excluding the target user itself)
-    similar_users_idx = similarities.argsort()[::-1][1:top_n+1]
+    similar_users_idx = similarities.argsort()[::-1][:top_n+1]
     similar_users = user_data.iloc[similar_users_idx]["_id"].tolist()
     
     return similar_users # similar_users
 
 
-async def recommendUsers( userId ):
+async def recommendUsers( userId, data):
     """
     Handles the prediction request by validating input, preprocessing, and calling the model.
     """
@@ -67,7 +67,7 @@ async def recommendUsers( userId ):
     try:
         # Preprocess input
         # preprocessed_data = preprocess_data(input_data)
-
+        topn = int(data.get('top', 15))
         # Perform prediction
         # prediction = await perform_prediction(models[model_name], preprocessed_data)
         # Some logic to generate response data
@@ -78,7 +78,7 @@ async def recommendUsers( userId ):
             print("-->userId", userId)
             return create_response([], HTTPStatus.NOT_FOUND, "user data not found")
         # print(encoded_data.info())
-        similar_users = get_most_similar_users(encoded_data, userId, FEATURES)
+        similar_users = get_most_similar_users(encoded_data, userId, FEATURES, top_n=topn)
         print("\n\n===>>similar_users::", similar_users)
         return create_response(similar_users, HTTPStatus.OK)
         # return response_data, status_code

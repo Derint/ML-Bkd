@@ -14,8 +14,9 @@ async def predict(userId):
     Route to handle predictions from a specific model.
     """
 
-    # data = await request.get_json()
-    response, status_code = await recommendUsers(userId)
+    data = await request.get_json()
+    print("\n\nDATA::", data)
+    response, status_code = await recommendUsers(userId, data)
     return jsonify(response), status_code
 
 
